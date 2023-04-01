@@ -24,10 +24,10 @@
                 lastPeerId = peer.id;
             }
 
-            console.log(`ID: ${peer.id},\nID2: ${id}`);
+            console.log(`ID: ${peer.id}`);
             recipientIdEl.textContent = `ID: ${peer.id}`;
 
-            const domain = '192.168.244.174:5500';
+            const domain = 'https://alik-r.github.io/clip-sync';
             new QRCode(document.getElementById('qrcode'),`http://${domain}/sender.html?id=${peer.id}`);
             statusEl.textContent = 'Awaiting connection...';
         });
