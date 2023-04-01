@@ -28,7 +28,7 @@
             recipientIdEl.textContent = `ID: ${peer.id}`;
 
             const domain = 'https://alik-r.github.io/clip-sync';
-            new QRCode(document.getElementById('qrcode'),`http://${domain}/sender.html?id=${peer.id}`);
+            new QRCode(document.getElementById('qrcode'),`${domain}/sender.html?id=${peer.id}`);
             statusEl.textContent = 'Awaiting connection...';
         });
 

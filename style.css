@@ -16,6 +16,10 @@
   gap: 6px;
 }
 
+#status {
+  text-align: center;
+}
+
 .id-input {
     display: flex;
     gap: 5px;
