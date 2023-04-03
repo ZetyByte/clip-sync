@@ -150,7 +150,7 @@
 
     init();
     // Automatically connect after one second delay if 'id' URL parameter is present
-    setTimeout(() => {
-        join(); 
-    }, 1000);
+    if(getUrlParam('id') !== null) {
+        setTimeout(join, 1000);        
+    }
 })();
