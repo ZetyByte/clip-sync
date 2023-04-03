@@ -25,6 +25,12 @@
     gap: 5px;
 }
 
+#sendInput {
+  margin-top: 4px;
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+
 .messages {
   display: flex;
   flex-direction: column;
