@@ -99,7 +99,7 @@
         const regexS = "[\\?&]" + name + "=([^&#]*)";
         const regex = new RegExp(regexS);
         const results = regex.exec(window.location.href);
-        if (results === null) // == or === ?
+        if (results === null)
             return null;
         else
             return results[1];

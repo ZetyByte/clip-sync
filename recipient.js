@@ -6,13 +6,13 @@
     const statusEl = document.getElementById('status');
     const messageEl = document.getElementById('message');
     const btnSend = document.querySelector('.send');
+    const linkEl = document.getElementById('link');
     const sendInput = document.getElementById('sendInput');
     const btnClear= document.querySelector('.clearMsg');
 
     function init() {
-        // ... new Peer([id], [options])
         peer = new Peer(null, {
-            debug: 2 // Prints errors and warnings
+            debug: 2 
         });
 
         peer.on('open', function(id) {
@@ -27,8 +27,9 @@
             console.log(`ID: ${peer.id}`);
             recipientIdEl.textContent = `ID: ${peer.id}`;
 
-            const domain = 'https://alik-r.github.io/clip-sync';
-            new QRCode(document.getElementById('qrcode'),`${domain}/sender.html?id=${peer.id}`);
+            const url = `https://alik-r.github.io/clip-sync/sender.html?id=${peer.id}`;
+            new QRCode(document.getElementById('qrcode'),url);
+            linkEl.setAttribute('href', url);
             statusEl.textContent = 'Awaiting connection...';
         });
 
@@ -94,6 +95,7 @@
     function addMessage(msg) {
         const timeString = getTime();
 
+        // Sanitize the message to prevent XSS (Cross-site scripting)
         msg = DOMPurify.sanitize(msg, { USE_PROFILES: { html: false } });
         messageEl.innerHTML = `<br><span class="msg-time">${timeString}</span>  -  ` + msg + message.innerHTML;
     }
