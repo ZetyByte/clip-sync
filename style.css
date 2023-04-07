@@ -8,16 +8,21 @@
     margin-top: 50px;
 }
 
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+body {
+  background: linear-gradient(to top left, #22DD57, #4EE479);
+  height: 100vh;
+}
+
 .status {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-}
-
-#status {
-  text-align: center;
 }
 
 .id-input {
@@ -25,21 +30,17 @@
     gap: 5px;
 }
 
-#sendInput {
-  margin-top: 4px;
-  padding: 4px 10px;
-  border-radius: 6px;
-}
-
 .messages {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  margin: 2px;
 }
 
 .title {
   font-weight: bold;
+  margin-bottom: 4px;
 }
 
 input[type="text"] {
@@ -47,7 +48,7 @@ input[type="text"] {
 }
   
 .btn {
-    background-color: #4CAF50;
+    background-color: #218125;
     border: none;
     border-radius: 10px;
     color: white;
@@ -63,4 +64,23 @@ input[type="text"] {
 .selfMsg,
 .peerMsg {
     font-weight: 700;
+}
+
+.selfMsg {
+    color: rgb(13, 218, 218);
+}
+
+.peerMsg {
+    color: rgb(153, 221, 50);
+}
+  
+#qrcode {
+  padding:2px;
+  border:6px solid #218125;
+  border-radius: 6px;
+  background-color: aliceblue;
+}
+
+#pass-word {
+  margin: 10px;
 }

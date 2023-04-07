@@ -1,6 +1,7 @@
 (function() {
     let lastPeerId = null;
     let peer = null;
+    let peerId = null;
     let conn = null;
     const recipientIdEl = document.getElementById('receiver-id');
     const statusEl = document.getElementById('status');
@@ -26,9 +27,7 @@
 
             console.log(`ID: ${peer.id}`);
             recipientIdEl.textContent = `ID: ${peer.id}`;
-
-            const domain = 'https://alik-r.github.io/clip-sync';
-            new QRCode(document.getElementById('qrcode'),`${domain}/sender.html?id=${peer.id}`);
+            const qrcode = new QRCode(document.getElementById('qrcode'),`https://clipsync-123.web.app/sender.html?id=${peer.id}`);
             statusEl.textContent = 'Awaiting connection...';
         });
 
@@ -46,12 +45,15 @@
             conn = newConn;
             console.log(`Connected to: ${conn.peer}`);
             statusEl.textContent = 'Connected';
+            document.getElementById('qrcode').hidden = true
             ready();
         });
 
         peer.on('disconnected', function() {
             statusEl.textContent = 'Connection lost.';
             console.log('Connection lost.');
+            document.getElementById('qrcode').hidden = false
+
 
             // Workaround for peer.reconnect deleting previous id
             peer.id = lastPeerId;
@@ -74,11 +76,12 @@
     function ready() {
         conn.on('data', function(data) {
             console.log('Data received.');
-            addMessage(`<span class="peerMsg">Peer: </span>` + data);
+            addMessage(`<span class="peerMsg">></span>` + data);
         });
 
         conn.on('close', function() {
             statusEl.innerHTML = 'Connection reset<br>Awaiting connection...';
+            document.getElementById('qrcode').hidden = false
             conn = null;
         });
     }
@@ -118,7 +121,7 @@
             sendInput.value = '';
             conn.send(msg);
             console.log(`Sent: ${msg}`);
-            addMessage(`<span class="selfMsg">Me: </span>${msg}`);
+            addMessage(`<span class="selfMsg"></span>${msg}<`);
         } else {
             console.log('Connection is closed.');
         }

@@ -1,6 +1,8 @@
 (function() {
+    let uid;
     let lastPeerId = null;
     let peer = null;
+    let peerId = null;
     let conn = null;
     const recipientInput = document.getElementById('receiver-id');
     const statusEl = document.getElementById('status');
@@ -11,8 +13,9 @@
     const btnConnect = document.querySelector('.connect');
 
     function init() {
+        // ... new Peer([id], [options])
         peer = new Peer(null, {
-            debug: 2
+            debug: 2 // Prints errors and warnings
         });
 
         peer.on('open', function(id) {
@@ -25,7 +28,7 @@
             }
 
             console.log(`ID: ${peer.id}`);
-            statusEl.textContent = 'Awaiting connection...'; 
+            statusEl.textContent = 'Awaiting connection...'; // DIFF
         });
 
         peer.on('connection', function(newConn) {
@@ -56,20 +59,27 @@
             console.log(`Error: ${err}`);
             alert(`${err}`);
         })
-    }
-
+        
+    }       
+        
+    
     function join() {
         // Close old connection
         if(conn) {
             conn.close();
         }
 
-        if(getUrlParam('id') !== null) recipientInput.value = getUrlParam('id');
-        conn = peer.connect(recipientInput.value, {
+        // console.log('url param id:' + getUrlParam('id'));
+        // if(getUrlParam('id') !== null) recipientInput.value = getUrlParam('id');
+        // conn = peer.connect(recipientInput.value, {
+        //     reliable: true
+        // });
+        conn = peer.connect(uid, {
             reliable: true
         });
 
         conn.on('open', function() {
+            // document.querySelectorAll('#hide').display=none;
             statusEl.textContent = `Connected to: ${conn.peer}`;
             console.log(`Connected to: ${conn.peer}`);
 
@@ -81,14 +91,15 @@
         });
 
         conn.on('data', function(data) {
-            addMessage(`<span class="peerMsg">Peer: </span>` + data);
+            addMessage(`<span class="peerMsg">></span>` + data);
         });
 
         conn.on('close', function() {
             statusEl.textContent = 'Connection closed.';
         });
     }
-    btnConnect.addEventListener('click', join);
+    // btnConnect.addEventListener('click', join);
+    // if(getUrlParam('id') !== null){join();}
 
     /*
     Get first "GET style" parameter from href.
@@ -116,10 +127,8 @@
     function addMessage(msg) {
         const timeString = getTime();
 
-        // Sanitize the message to prevent XSS (Cross-site scripting)
         msg = DOMPurify.sanitize(msg, { USE_PROFILES: { html: false } });
-        messageEl.innerHTML = `<br><span class="msg-time">${timeString}</span>  
-        -  ` + msg + message.innerHTML;
+        messageEl.innerHTML = `<br><span class="msg-time">${timeString}</span>  -  ` + msg + message.innerHTML;
     }
 
     function clearMessages() {
@@ -142,15 +151,19 @@
             sendInput.value = '';
             conn.send(msg);
             console.log(`Sent: ${msg}`);
-            addMessage(`<span class="selfMsg">Me: </span>${msg}`);
+            addMessage(`<span class="selfMsg"></span>${msg}<`);
         } else {
             console.log('Connection is closed.');
         }
     });
 
     init();
-    // Automatically connect after one second delay if 'id' URL parameter is present
-    if(getUrlParam('id') !== null) {
-        setTimeout(join, 1000);        
-    }
+    if(getUrlParam('id') !== null){ 
+        uid = getUrlParam('id');
+        console.log('url param id:' + uid);
+    };
+    setTimeout(()=>{
+        join();
+    }, 1000)
+    
 })();
