@@ -9,6 +9,8 @@
     const btnSend = document.querySelector('.send');
     const sendInput = document.getElementById('sendInput');
     const btnClear= document.querySelector('.clearMsg');
+    const hide = document.querySelector('.hide');
+    const url = 'http://127.0.0.1:8080/'
 
     function init() {
         // ... new Peer([id], [options])
@@ -26,7 +28,7 @@
             }
 
             console.log(`ID: ${peer.id}`);
-            recipientIdEl.textContent = `ID: ${peer.id}`;
+            recipientIdEl.textContent = `${peer.id}`;
             const qrcode = new QRCode(document.getElementById('qrcode'),`https://clipsync-123.web.app/sender.html?id=${peer.id}`);
             statusEl.textContent = 'Awaiting connection...';
         });
@@ -45,7 +47,8 @@
             conn = newConn;
             console.log(`Connected to: ${conn.peer}`);
             statusEl.textContent = 'Connected';
-            document.getElementById('qrcode').hidden = true
+            document.getElementById('qrcode').hidden = true;
+            document.getElementById('messages').style.display='flex';
             ready();
         });
 
@@ -76,7 +79,8 @@
     function ready() {
         conn.on('data', function(data) {
             console.log('Data received.');
-            addMessage(`<span class="peerMsg">></span>` + data);
+            msg = DOMPurify.sanitize(data, { USE_PROFILES: { html: false } });
+            addMessage(`<p class="peerMsg">>${msg}</p>`);
         });
 
         conn.on('close', function() {
@@ -95,10 +99,8 @@
     }
 
     function addMessage(msg) {
-        const timeString = getTime();
-
-        msg = DOMPurify.sanitize(msg, { USE_PROFILES: { html: false } });
-        messageEl.innerHTML = `<br><span class="msg-time">${timeString}</span>  -  ` + msg + message.innerHTML;
+        // msg = DOMPurify.sanitize(msg, { USE_PROFILES: { html: false } });
+        messageEl.innerHTML =  msg+document.getElementById('message').innerHTML;
     }
 
     function clearMessages() {
@@ -116,16 +118,21 @@
 
     btnSend.addEventListener('click', function() {
         if(conn && conn.open) {
-            const msg = sendInput.value;
+            const msg = DOMPurify.sanitize(sendInput.value, { USE_PROFILES: { html: false } });
             // Clear the input field
             sendInput.value = '';
             conn.send(msg);
             console.log(`Sent: ${msg}`);
-            addMessage(`<span class="selfMsg"></span>${msg}<`);
+            addMessage(`<p type="text" style="word-wrap: break-word; overflow-wrap: break-word;" class="selfMsg">${msg}< </p>`);
         } else {
             console.log('Connection is closed.');
         }
     });
+
+    hide.addEventListener('click', () => {
+        if(hide.src == url + 'open.png') hide.src = 'hidden.png';
+        else hide.src = 'open.png'
+    })
 
     init();
 

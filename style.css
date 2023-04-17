@@ -31,16 +31,43 @@ body {
 }
 
 .messages {
-  display: flex;
   flex-direction: column;
-  align-items: center;
+  /* align-items: center; */
   justify-content: center;
   margin: 2px;
+}
+.message {
+  width: 504px;
+  height: 200px;
+  background-color: aliceblue;
+  border: rgb(172, 170, 170) 3px solid;
+
+  border-radius: 5px;
+  margin: 2px;
+  margin-bottom: 5px;
+  padding-bottom: 5px;
+  padding-top: 0px;
+}
+
+#message {
+  align-items: center;
+  height: 160px;
+  width: 494px;
+  overflow-y: scroll;
+  margin: 2px;
+  /* padding: 5px; */
+}
+
+.message-panel {
+  background-color: rgb(179, 183, 187);
+  height: 28px;
+  margin-bottom: 3px;
 }
 
 .title {
   font-weight: bold;
   margin-bottom: 4px;
+  text-align: center;
 }
 
 input[type="text"] {
@@ -64,15 +91,18 @@ input[type="text"] {
 .selfMsg,
 .peerMsg {
     font-weight: 700;
+    width: 490px;
+    height: auto;
+    margin: 3px;
 }
 
-.selfMsg {
+/* .selfMsg {
     color: rgb(13, 218, 218);
 }
 
 .peerMsg {
     color: rgb(153, 221, 50);
-}
+} */
   
 #qrcode {
   padding:2px;
@@ -83,4 +113,18 @@ input[type="text"] {
 
 #pass-word {
   margin: 10px;
+}
+
+.selfMsg {
+  text-align: right;
+  color:black;
+}
+
+.peerMsg {
+  text-align: left;
+  color:black;
+}
+
+.hide {
+  height: 28px;
 }

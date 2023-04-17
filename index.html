@@ -13,9 +13,7 @@
         <a href="./sender.html">Sender</a>
     </h3>
     </div>
-    <div  id="receiver-id" style="font-weight: bold;" title="Copy this ID to the input on send.html.">
-        ID:
-    </div>
+    <div  id="receiver-id" style="font-weight: bold;" title="Copy this ID to the input on send.html."></div>
 
         
         <div class="container">
@@ -26,15 +24,19 @@
                 <div id="qrcode"></div>
             </div>
     
-            <div class="messages">
+            <div class="messages" id="messages" >
                 <div class="title">Messages:</div>
+                <div class="message">
+                    <div class="message-panel">
+                        <img class="hide" src="open.png"/>
+                    </div>
+                    <div id="message"></div>
+                </div>
                 <input type="text" id="sendInput" placeholder="Enter a message..." autofocus="true">
-                <div id="pass-word"><input type="checkbox"/> Send the password</div>
                 <div class="btns">
                     <button class="btn send">Send</button>
                     <button class="btn clearMsg">Clear Messages (Locally)</button>  
                 </div>
-                <div class="message" id="message"></div>
             </div>
         </div> 
     
