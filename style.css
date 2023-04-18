@@ -14,7 +14,8 @@
   padding: 0;
 }
 body {
-  background: linear-gradient(to top left, #22DD57, #4EE479);
+  background: linear-gradient(to top left, #5e503f, #c6ac8f);
+  /* background: linear-gradient(to top left, #22DD57, #4EE479); */
   height: 100vh;
 }
 
@@ -37,7 +38,7 @@ body {
   margin: 2px;
 }
 .message {
-  width: 504px;
+  width: 504px auto;
   height: 200px;
   background-color: aliceblue;
   border: rgb(172, 170, 170) 3px solid;
@@ -51,11 +52,22 @@ body {
 
 #message {
   align-items: center;
-  height: 160px;
+  height: 139px;
   width: 494px;
   overflow-y: scroll;
   margin: 2px;
   /* padding: 5px; */
+}
+
+#sendInput {
+  background-color: rgb(233, 238, 241);
+  outline: none;
+  border-color: rgb(233, 238, 241);
+}
+
+#sendInput:focus {
+  background-color: rgb(226, 229, 233);
+  border-color: rgb(226, 229, 233);
 }
 
 .message-panel {
@@ -91,7 +103,7 @@ input[type="text"] {
 .selfMsg,
 .peerMsg {
     font-weight: 700;
-    width: 490px;
+    width: auto;
     height: auto;
     margin: 3px;
 }
@@ -106,7 +118,7 @@ input[type="text"] {
   
 #qrcode {
   padding:2px;
-  border:6px solid #218125;
+  border:6px solid #5e503f;
   border-radius: 6px;
   background-color: aliceblue;
 }
@@ -127,4 +139,5 @@ input[type="text"] {
 
 .hide {
   height: 28px;
+  float: right;
 }

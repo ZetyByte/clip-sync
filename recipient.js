@@ -10,7 +10,7 @@
     const sendInput = document.getElementById('sendInput');
     const btnClear= document.querySelector('.clearMsg');
     const hide = document.querySelector('.hide');
-    const url = 'http://127.0.0.1:8080/'
+    const url = window.location.href;
 
     function init() {
         // ... new Peer([id], [options])
@@ -88,14 +88,6 @@
             document.getElementById('qrcode').hidden = false
             conn = null;
         });
-    }
-
-    function getTime() {
-        const now = new Date();
-        const options = {hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone};
-        const timeString = now.toLocaleTimeString([], options);
-    
-        return timeString;
     }
 
     function addMessage(msg) {

@@ -5,11 +5,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./style.css">
-    <title>ClipSync | Sender</title>
+    <title>ClipSync | PEER</title>
 </head>
 <body>
     <div class="container">
-        <h1>ClipSync - Guest</h1>
+        <h1>ClipSync - Peer</h1>
         <div class="status">
             <div class="title">Status:</div>
             <div class="id-input">
@@ -22,12 +22,17 @@
 
         <div class="messages">
             <div class="title">Messages:</div>
+            <div class="message">
+                <div class="message-panel">
+                    <img class="hide" src="open.png" />
+                </div>
+                <div id="message"></div>
+            </div>
             <input type="text" id="sendInput" placeholder="Enter a message..." autofocus="true">
             <div class="btns">
                 <button class="btn send">Send</button>
                 <button class="btn clearMsg">Clear Messages (Locally)</button>  
-            </div>         
-            <div class="message" id="message"></div>
+            </div>            
         </div>
     </div>
 

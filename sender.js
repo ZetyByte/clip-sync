@@ -91,14 +91,15 @@
         });
 
         conn.on('data', function(data) {
-            addMessage(`<span class="peerMsg">></span>` + data);
+            console.log('Data received.');
+            msg = DOMPurify.sanitize(data, { USE_PROFILES: { html: false } });
+            addMessage(`<p class="peerMsg">>${msg}</p>`);
         });
 
         conn.on('close', function() {
             statusEl.textContent = 'Connection closed.';
         });
     }
-    // btnConnect.addEventListener('click', join);
     // if(getUrlParam('id') !== null){join();}
 
     /*
@@ -116,19 +117,9 @@
             return results[1];
     }
 
-    function getTime() {
-        const now = new Date();
-        const options = {hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone};
-        const timeString = now.toLocaleTimeString([], options);
-    
-        return timeString;
-    }
-
     function addMessage(msg) {
-        const timeString = getTime();
-
-        msg = DOMPurify.sanitize(msg, { USE_PROFILES: { html: false } });
-        messageEl.innerHTML = `<br><span class="msg-time">${timeString}</span>  -  ` + msg + message.innerHTML;
+        // msg = DOMPurify.sanitize(msg, { USE_PROFILES: { html: false } });
+        messageEl.innerHTML =  msg+document.getElementById('message').innerHTML;
     }
 
     function clearMessages() {
@@ -146,12 +137,12 @@
 
     btnSend.addEventListener('click', function() {
         if(conn && conn.open) {
-            const msg = sendInput.value;
+            const msg = DOMPurify.sanitize(sendInput.value, { USE_PROFILES: { html: false } });
             // Clear the input field
             sendInput.value = '';
             conn.send(msg);
             console.log(`Sent: ${msg}`);
-            addMessage(`<span class="selfMsg"></span>${msg}<`);
+            addMessage(`<p type="text" style="word-wrap: break-word; overflow-wrap: break-word;" class="selfMsg">${msg}< </p>`);
         } else {
             console.log('Connection is closed.');
         }
@@ -162,6 +153,10 @@
         uid = getUrlParam('id');
         console.log('url param id:' + uid);
     };
+    btnConnect.addEventListener('click', () => {
+            uid = recipientInput.value;
+            join();
+    }); 
     setTimeout(()=>{
         join();
     }, 1000)
