@@ -32,13 +32,16 @@ body {
 }
 
 .messages {
+  display: flex;
   flex-direction: column;
   /* align-items: center; */
   justify-content: center;
   margin: 2px;
 }
-.message {
-  width: 504px auto;
+.message-box {
+  word-wrap: break-word;
+  max-width: 100%;
+  /* width: 504px auto; */
   height: 200px;
   background-color: aliceblue;
   border: rgb(172, 170, 170) 3px solid;
@@ -53,7 +56,8 @@ body {
 #message {
   align-items: center;
   height: 139px;
-  width: 494px;
+  max-width: 100%;
+  /* width: 100%; */
   overflow-y: scroll;
   margin: 2px;
   /* padding: 5px; */
@@ -84,6 +88,10 @@ body {
 
 input[type="text"] {
   width: 100%;
+}
+
+.btns {
+  text-align: center;
 }
   
 .btn {

@@ -12,6 +12,9 @@
     const hide = document.querySelector('.hide');
     const url = window.location.href;
 
+    var msgJson = JSON.parse('{"visibility": "visible", "message": ""}');
+    var peerJson;
+
     function init() {
         // ... new Peer([id], [options])
         peer = new Peer(null, {
@@ -29,7 +32,7 @@
 
             console.log(`ID: ${peer.id}`);
             recipientIdEl.textContent = `${peer.id}`;
-            const qrcode = new QRCode(document.getElementById('qrcode'),`https://clipsync-123.web.app/sender.html?id=${peer.id}`);
+            const qrcode = new QRCode(document.getElementById('qrcode'),`${url}sender.html?id=${peer.id}`);
             statusEl.textContent = 'Awaiting connection...';
         });
 
@@ -47,8 +50,6 @@
             conn = newConn;
             console.log(`Connected to: ${conn.peer}`);
             statusEl.textContent = 'Connected';
-            document.getElementById('qrcode').hidden = true;
-            document.getElementById('messages').style.display='flex';
             ready();
         });
 
@@ -78,9 +79,17 @@
 
     function ready() {
         conn.on('data', function(data) {
-            console.log('Data received.');
-            msg = DOMPurify.sanitize(data, { USE_PROFILES: { html: false } });
-            addMessage(`<p class="peerMsg">>${msg}</p>`);
+            peerJson = data;
+            if(peerJson["visibility"] === "hidden"){
+                console.log('Data received.');
+                addMessage(`<p class="peerMsg">>#######(Secret message)</p>`);
+            }else{
+                console.log('Data received.');
+                addMessage(`<p style="word-wrap: break-word; overflow-wrap: break-word;" class="peerMsg">>${data["message"]}</p>`);
+            }
+            document.querySelector('.copy-message').addEventListener('click', () => {
+                writeClipboard(data["message"]);
+            });
         });
 
         conn.on('close', function() {
@@ -99,6 +108,42 @@
         messageEl.innerHTML = '';
         addMessage('(Messages cleared)');
     }
+
+    async function writeClipboard(data) {
+        try {
+          await navigator.clipboard.writeText(data);
+          console.log('message in clipboard');
+        } catch (err) {
+          console.error('Failed to copy: ', err);
+        }
+    }
+
+    function readAndSendClipboard(){
+        navigator.clipboard.readText().then(function(clipboardText) {
+            console.log(clipboardText);
+            sendMessage(clipboardText);
+          });
+    }
+
+    function sendMessage(data){
+        if(conn && conn.open) {
+            msgJson["message"] = DOMPurify.sanitize(data, { USE_PROFILES: { html: false } });
+            // Clear the input field
+            sendInput.value = '';
+            conn.send(msgJson);
+            console.log(`Sent: ${msgJson}`);
+            if(msgJson["visibility"] === "hidden"){
+                addMessage(`<p class="selfMsg">(Secret message)#######<</p>`);
+            }else addMessage(`<p style="word-wrap: break-word; overflow-wrap: break-word;" class="selfMsg">${msgJson["message"]}< </p>`);
+        } else {
+            console.log('Connection is closed.');
+        }
+    }
+
+    document.querySelector('.past-clipbrd').addEventListener('click', () => {
+        readAndSendClipboard();
+    });
+
     btnClear.addEventListener('click', clearMessages);
 
     sendInput.addEventListener('keypress', function(event) {
@@ -108,22 +153,21 @@
         }
     });
 
-    btnSend.addEventListener('click', function() {
-        if(conn && conn.open) {
-            const msg = DOMPurify.sanitize(sendInput.value, { USE_PROFILES: { html: false } });
-            // Clear the input field
-            sendInput.value = '';
-            conn.send(msg);
-            console.log(`Sent: ${msg}`);
-            addMessage(`<p type="text" style="word-wrap: break-word; overflow-wrap: break-word;" class="selfMsg">${msg}< </p>`);
-        } else {
-            console.log('Connection is closed.');
-        }
+    // send message
+    btnSend.addEventListener('click', () => {
+        sendMessage(sendInput.value);
     });
-
+    
+    // hidden
     hide.addEventListener('click', () => {
-        if(hide.src == url + 'open.png') hide.src = 'hidden.png';
-        else hide.src = 'open.png'
+        if(hide.src == url + 'open.png'){
+            hide.src = 'hidden.png';
+            msgJson["visibility"] = "hidden";
+        }
+        else{
+            hide.src = 'open.png';
+            msgJson["visibility"] = "visible";
+        }
     })
 
     init();
