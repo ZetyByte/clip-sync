@@ -103,9 +103,7 @@
                 console.log('Data received.');
                 addMessage(`<p style="word-wrap: break-word; overflow-wrap: break-word;" class="peerMsg">>${data["message"]}</p>`);
             }
-            document.querySelector('.copy-message').addEventListener('click', () => {
-                writeClipboard(data["message"]);
-            })
+            writeClipboard(data["message"]);
         });
 
         conn.on('close', function() {
