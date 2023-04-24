@@ -93,17 +93,20 @@
             }
         });
 
-        conn.on('data', function(data) {
+        conn.on('data', function(data64) {
             // msg = DOMPurify.sanitize(data, { USE_PROFILES: { html: false } });
-            
+            // const data = structuredClone(atob(data64));
+            // msg = decodeURIComponent(atob(data["message"]));
+            let data = JSON.parse(decodeURIComponent(atob(data64)));
+            msg = data["message"];
             if(data["visibility"] === "hidden"){
                 console.log('Data received.');
                 addMessage(`<p class="peerMsg">>#######(Secret message)</p>`);
             } else{
-                console.log('Data received.');
-                addMessage(`<p style="word-wrap: break-word; overflow-wrap: break-word;" class="peerMsg">>${data["message"]}</p>`);
+                console.log('Data received.', msg);
+                addMessage(`<p style="word-wrap: break-word; overflow-wrap: break-word;" class="peerMsg">>${msg}</p>`);
             }
-            writeClipboard(data["message"]);
+            writeClipboard(msg);
         });
 
         conn.on('close', function() {
@@ -146,6 +149,33 @@
         }
     }
 
+    function readAndSendClipboard(){
+        navigator.clipboard.readText().then(function(clipboardText) {
+            console.log(clipboardText);
+            sendMessage(clipboardText);
+          });
+    }
+
+    function sendMessage(data){
+        if(conn && conn.open) {
+            msg = DOMPurify.sanitize(data, { USE_PROFILES: { html: false } });
+            msgJson["message"] = msg;
+            // Clear the input field
+            sendInput.value = '';
+            conn.send(btoa(encodeURIComponent(JSON.stringify(msgJson))));
+            console.log(`Sent: ${msgJson}`);
+            if(msgJson["visibility"] === "hidden"){
+                addMessage(`<p class="selfMsg">(Secret message)#######<</p>`);
+            }else addMessage(`<p style="word-wrap: break-word; overflow-wrap: break-word;" class="selfMsg">${msg}< </p>`);
+        } else {
+            console.log('Connection is closed.');
+        }
+    }
+
+    document.querySelector('.past-clipbrd').addEventListener('click', () => {
+        readAndSendClipboard();
+    });
+
     btnClear.addEventListener('click', clearMessages);
 
     sendInput.addEventListener('keypress', function(event) {
@@ -156,19 +186,8 @@
     });
 
     // send message
-    btnSend.addEventListener('click', function() {
-        if(conn && conn.open) {
-            msgJson["message"] = DOMPurify.sanitize(sendInput.value, { USE_PROFILES: { html: false } });
-            // Clear the input field
-            sendInput.value = '';
-            conn.send(msgJson);
-            console.log(`Sent: ${msgJson["message"]}`);
-            if(msgJson["visibility"] === "hidden"){
-                addMessage(`<p class="selfMsg">(Secret message)#######<</p>`);
-            }else addMessage(`<p style="word-wrap: break-word; overflow-wrap: break-word;" class="selfMsg">${msgJson["message"]}< </p>`);
-        } else {
-            console.log('Connection is closed.');
-        }
+    btnSend.addEventListener('click', () => {
+        sendMessage(sendInput.value);
     });
 
     hide.addEventListener('click', () => {

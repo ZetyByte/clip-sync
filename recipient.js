@@ -78,18 +78,18 @@
     }
 
     function ready() {
-        conn.on('data', function(data) {
-            peerJson = data;
-            if(peerJson["visibility"] === "hidden"){
+        conn.on('data', function(data64) {
+            let data = JSON.parse(decodeURIComponent(atob(data64)));
+            msg = data["message"];
+            if(data["visibility"] === "hidden"){
                 console.log('Data received.');
                 addMessage(`<p class="peerMsg">>#######(Secret message)</p>`);
-            }else{
-                console.log('Data received.');
-                addMessage(`<p style="word-wrap: break-word; overflow-wrap: break-word;" class="peerMsg">>${data["message"]}</p>`);
+            } else{
+                console.log('Data received.', msg);
+                addMessage(`<p style="word-wrap: break-word; overflow-wrap: break-word;" class="peerMsg">>${msg}</p>`);
             }
-            document.querySelector('.copy-message').addEventListener('click', () => {
-                writeClipboard(data["message"]);
-            });
+            // automatically copies to clipboard
+            writeClipboard(data["message"]);
         });
 
         conn.on('close', function() {
@@ -127,14 +127,15 @@
 
     function sendMessage(data){
         if(conn && conn.open) {
-            msgJson["message"] = DOMPurify.sanitize(data, { USE_PROFILES: { html: false } });
+            msg = DOMPurify.sanitize(data, { USE_PROFILES: { html: false } });
+            msgJson["message"] = msg;
             // Clear the input field
             sendInput.value = '';
-            conn.send(msgJson);
+            conn.send(btoa(encodeURIComponent(JSON.stringify(msgJson))));
             console.log(`Sent: ${msgJson}`);
             if(msgJson["visibility"] === "hidden"){
                 addMessage(`<p class="selfMsg">(Secret message)#######<</p>`);
-            }else addMessage(`<p style="word-wrap: break-word; overflow-wrap: break-word;" class="selfMsg">${msgJson["message"]}< </p>`);
+            }else addMessage(`<p style="word-wrap: break-word; overflow-wrap: break-word;" class="selfMsg">${msg}< </p>`);
         } else {
             console.log('Connection is closed.');
         }
