@@ -4,48 +4,49 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clipsync | Setup</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .links {
-            display: flex;
-            gap: 30px;
-        }
-
-        #setup {
-            text-decoration: underline;
-        }
-    </style>
+    <link rel="stylesheet" href="./style.css">
+    <title>ClipSync | HOST</title>
 </head>
 <body>
-    <h1>ClipSync - Online Clipboard</h1>
-
-    <div class="links">
+    <div >
         <h3>
-            <a href="./recipient.html">Recipient</a>
-        </h3>
-        <h3>
-            <a href="./sender.html">Sender</a>
-        </h3>
+        <a href="./sender.html">Sender</a>
+    </h3>
     </div>
+    <div  id="receiver-id" style="font-weight: bold;" title="Copy this ID to the input on send.html."></div>
 
+        
+        <div class="container">
+            <h1>ClipSync - Host</h1>
+            <div class="status">
+                <div class="title">Status:</div>
+                <div id="status" class="status"></div>
+                <div id="qrcode"></div>
+            </div>
+    
+            <div class="messages" id="messages" >
+                <div class="title">Messages:</div>
+                <div class="message-box">
+                    <div class="message-panel">
+                        <img class="hide" src="open.png"/>
+                    </div>
+                    <div id="message"></div>
+                    <input type="text" id="sendInput" placeholder="Enter a message..." autofocus="true">
+                </div>
+                
+                <div class="btns">
+                    <button class="btn send">Send</button>
+                    <button class="btn clearMsg">Clear Messages (Locally)</button> 
+                    <button class="btn past-clipbrd">Past clipboard</button>
+                </div>
+            </div>
+        </div> 
+    
 
-    <div class="instructions">
-    <h3>Online clipboard for simple text exchange using WebRTC protocol.</h4>
-    <p></p>
-    <h4 id="setup">Setup</h4>
-    <p>1. Open receive.html on the receiving device.</p>
-    <p>2. Scan the QR code on the sending device.</p>
-    <p>3. Both should indicate a successful connection in the "Status" box.</p>
-    </div>
+    <script src="qrcode.js"></script>
+    <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
+    <script src="./purify.js"></script>
+    <script src="./recipient.js"></script>
+       
 </body>
 </html>

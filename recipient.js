@@ -1,6 +1,7 @@
 (function() {
     let lastPeerId = null;
     let peer = null;
+    let peerId = null;
     let conn = null;
     const recipientIdEl = document.getElementById('receiver-id');
     const statusEl = document.getElementById('status');
@@ -9,6 +10,10 @@
     const linkEl = document.getElementById('link');
     const sendInput = document.getElementById('sendInput');
     const btnClear= document.querySelector('.clearMsg');
+    const hide = document.querySelector('.hide');
+    const url = window.location.href;
+
+    var msgJson = JSON.parse('{"visibility": "visible", "message": ""}');
 
     function init() {
         peer = new Peer(null, {
@@ -25,11 +30,16 @@
             }
 
             console.log(`ID: ${peer.id}`);
+<<<<<<< HEAD
+            recipientIdEl.textContent = `${peer.id}`;
+            const qrcode = new QRCode(document.getElementById('qrcode'),`${url}sender.html?id=${peer.id}`);
+=======
             recipientIdEl.textContent = `ID: ${peer.id}`;
 
             const url = `https://alik-r.github.io/clip-sync/sender.html?id=${peer.id}`;
             new QRCode(document.getElementById('qrcode'),url);
             linkEl.setAttribute('href', url);
+>>>>>>> d42e1b2c6296586963f8535bf330a0c0213184dc
             statusEl.textContent = 'Awaiting connection...';
         });
 
@@ -53,6 +63,8 @@
         peer.on('disconnected', function() {
             statusEl.textContent = 'Connection lost.';
             console.log('Connection lost.');
+            document.getElementById('qrcode').hidden = false
+
 
             // Workaround for peer.reconnect deleting previous id
             peer.id = lastPeerId;
@@ -73,37 +85,81 @@
     }
 
     function ready() {
-        conn.on('data', function(data) {
-            console.log('Data received.');
-            addMessage(`<span class="peerMsg">Peer: </span>` + data);
+        conn.on('data', function(data64) {
+            let data = JSON.parse(decodeURIComponent(atob(data64)));
+            msg = data["message"];
+            if(data["visibility"] === "hidden"){
+                console.log('Data received.');
+                addMessage(`<p class="peerMsg">>#######(Secret message)</p>`);
+            } else{
+                console.log('Data received.', msg);
+                addMessage(`<p style="word-wrap: break-word; overflow-wrap: break-word;" class="peerMsg">>${msg}</p>`);
+            }
+            // automatically copies to clipboard
+            writeClipboard(data["message"]);
         });
 
         conn.on('close', function() {
             statusEl.innerHTML = 'Connection reset<br>Awaiting connection...';
+            document.getElementById('qrcode').hidden = false
             conn = null;
         });
     }
 
-    function getTime() {
-        const now = new Date();
-        const options = {hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone};
-        const timeString = now.toLocaleTimeString([], options);
-    
-        return timeString;
-    }
-
     function addMessage(msg) {
+<<<<<<< HEAD
+        // msg = DOMPurify.sanitize(msg, { USE_PROFILES: { html: false } });
+        messageEl.innerHTML =  msg+document.getElementById('message').innerHTML;
+=======
         const timeString = getTime();
 
         // Sanitize the message to prevent XSS (Cross-site scripting)
         msg = DOMPurify.sanitize(msg, { USE_PROFILES: { html: false } });
         messageEl.innerHTML = `<br><span class="msg-time">${timeString}</span>  -  ` + msg + message.innerHTML;
+>>>>>>> d42e1b2c6296586963f8535bf330a0c0213184dc
     }
 
     function clearMessages() {
         messageEl.innerHTML = '';
         addMessage('(Messages cleared)');
     }
+
+    async function writeClipboard(data) {
+        try {
+          await navigator.clipboard.writeText(data);
+          console.log('message in clipboard');
+        } catch (err) {
+          console.error('Failed to copy: ', err);
+        }
+    }
+
+    function readAndSendClipboard(){
+        navigator.clipboard.readText().then(function(clipboardText) {
+            console.log(clipboardText);
+            sendMessage(clipboardText);
+          });
+    }
+
+    function sendMessage(data){
+        if(conn && conn.open) {
+            msg = DOMPurify.sanitize(data, { USE_PROFILES: { html: false } });
+            msgJson["message"] = msg;
+            // Clear the input field
+            sendInput.value = '';
+            conn.send(btoa(encodeURIComponent(JSON.stringify(msgJson))));
+            console.log(`Sent: ${msgJson}`);
+            if(msgJson["visibility"] === "hidden"){
+                addMessage(`<p class="selfMsg">(Secret message)#######<</p>`);
+            }else addMessage(`<p style="word-wrap: break-word; overflow-wrap: break-word;" class="selfMsg">${msg}< </p>`);
+        } else {
+            console.log('Connection is closed.');
+        }
+    }
+
+    document.querySelector('.past-clipbrd').addEventListener('click', () => {
+        readAndSendClipboard();
+    });
+
     btnClear.addEventListener('click', clearMessages);
 
     sendInput.addEventListener('keypress', function(event) {
@@ -113,18 +169,22 @@
         }
     });
 
-    btnSend.addEventListener('click', function() {
-        if(conn && conn.open) {
-            const msg = sendInput.value;
-            // Clear the input field
-            sendInput.value = '';
-            conn.send(msg);
-            console.log(`Sent: ${msg}`);
-            addMessage(`<span class="selfMsg">Me: </span>${msg}`);
-        } else {
-            console.log('Connection is closed.');
-        }
+    // send message
+    btnSend.addEventListener('click', () => {
+        sendMessage(sendInput.value);
     });
+    
+    // hidden
+    hide.addEventListener('click', () => {
+        if(hide.src == url + 'open.png'){
+            hide.src = 'hidden.png';
+            msgJson["visibility"] = "hidden";
+        }
+        else{
+            hide.src = 'open.png';
+            msgJson["visibility"] = "visible";
+        }
+    })
 
     init();
 
