@@ -12,6 +12,7 @@
     const btnClear= document.querySelector('.clearMsg');
     const btnConnect = document.querySelector('.connect');
     const hide = document.querySelector('.hide');
+    const url = window.location.href.replace("sender.html", "");
 
     var msgJson = JSON.parse('{"visibility": "visible", "message": ""}');
 
@@ -191,7 +192,7 @@
     });
 
     hide.addEventListener('click', () => {
-        if(hide.src == 'http://127.0.0.1:8080/open.png'){
+        if(hide.src == url + 'open.png'){
             hide.src = 'hidden.png';
             msgJson["visibility"] = "hidden";
         }
