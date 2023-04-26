@@ -13,7 +13,6 @@
     const url = window.location.href;
 
     var msgJson = JSON.parse('{"visibility": "visible", "message": ""}');
-    var peerJson;
 
     function init() {
         // ... new Peer([id], [options])
