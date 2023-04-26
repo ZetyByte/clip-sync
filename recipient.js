@@ -7,6 +7,7 @@
     const statusEl = document.getElementById('status');
     const messageEl = document.getElementById('message');
     const btnSend = document.querySelector('.send');
+    const linkEl = document.getElementById('link');
     const sendInput = document.getElementById('sendInput');
     const btnClear= document.querySelector('.clearMsg');
     const hide = document.querySelector('.hide');
@@ -15,9 +16,8 @@
     var msgJson = JSON.parse('{"visibility": "visible", "message": ""}');
 
     function init() {
-        // ... new Peer([id], [options])
         peer = new Peer(null, {
-            debug: 2 // Prints errors and warnings
+            debug: 2 
         });
 
         peer.on('open', function(id) {
@@ -30,8 +30,16 @@
             }
 
             console.log(`ID: ${peer.id}`);
+<<<<<<< HEAD
             recipientIdEl.textContent = `${peer.id}`;
             const qrcode = new QRCode(document.getElementById('qrcode'),`${url}sender.html?id=${peer.id}`);
+=======
+            recipientIdEl.textContent = `ID: ${peer.id}`;
+
+            const url = `https://alik-r.github.io/clip-sync/sender.html?id=${peer.id}`;
+            new QRCode(document.getElementById('qrcode'),url);
+            linkEl.setAttribute('href', url);
+>>>>>>> d42e1b2c6296586963f8535bf330a0c0213184dc
             statusEl.textContent = 'Awaiting connection...';
         });
 
@@ -99,8 +107,16 @@
     }
 
     function addMessage(msg) {
+<<<<<<< HEAD
         // msg = DOMPurify.sanitize(msg, { USE_PROFILES: { html: false } });
         messageEl.innerHTML =  msg+document.getElementById('message').innerHTML;
+=======
+        const timeString = getTime();
+
+        // Sanitize the message to prevent XSS (Cross-site scripting)
+        msg = DOMPurify.sanitize(msg, { USE_PROFILES: { html: false } });
+        messageEl.innerHTML = `<br><span class="msg-time">${timeString}</span>  -  ` + msg + message.innerHTML;
+>>>>>>> d42e1b2c6296586963f8535bf330a0c0213184dc
     }
 
     function clearMessages() {
