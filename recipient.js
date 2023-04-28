@@ -160,7 +160,7 @@
     
     // hidden
     hide.addEventListener('click', () => {
-        if(hide.src == url + 'open.png'){
+        if(msgJson["visibility"] == "visible"){
             hide.src = 'hidden.png';
             msgJson["visibility"] = "hidden";
         }

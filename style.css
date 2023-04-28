@@ -14,7 +14,7 @@
   padding: 0;
 }
 body {
-  background: linear-gradient(to top left, #5e503f, #c6ac8f);
+  /* background: linear-gradient(to top left, #5e503f, #c6ac8f); */
   /* background: linear-gradient(to top left, #22DD57, #4EE479); */
   height: 100vh;
 }
@@ -126,7 +126,7 @@ input[type="text"] {
   
 #qrcode {
   padding:2px;
-  border:6px solid #5e503f;
+  border:6px solid #52504f;
   border-radius: 6px;
   background-color: aliceblue;
 }
